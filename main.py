@@ -1,11 +1,22 @@
 #!/usr/bin/python3
-import os, frontmatter
+import os, frontmatter, yaml
 
-keys = [] # key names
-vault_path = "" # "absolute path to the vault"
-exclude = "" # template path to exclude; leave empty if you don't want to exclude anything
+
+def get_config() -> dict[str, str]:
+    with open("config.yml", "r") as f:
+        config = yaml.safe_load(f.read())
+        return {
+            "keys": config["keys"],
+            "path": config["vault_path"],
+            "exclude": config["exclude"]
+        }
+
 
 def main():
+    config = get_config()
+    keys = config["keys"]
+    vault_path = config["path"]
+    exclude = config["exclude"]
     if len(vault_path) > 0 and len(keys) > 0:
         for dirpath, dirnames, files in os.walk(vault_path):
             # print(f"Found directory: {dirnames}, located here:{dirpath}")
@@ -16,13 +27,13 @@ def main():
                         print(normalised_path)
                         with open(normalised_path, "r") as f:
                             post = frontmatter.load(f)
-                            change_keys(post, normalised_path)
+                            change_keys(post, normalised_path, keys)
         print("Done!")
     else:
         print("Set a vault path and/or add a key!")
 
 
-def change_keys(post: frontmatter.Post, normPath: str):
+def change_keys(post: frontmatter.Post, normPath: str, keys: list):
     for key in keys:
         value = post.get(key)
         if value is not None:
