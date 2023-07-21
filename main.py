@@ -9,7 +9,7 @@ class Movie(TypedDict):
     exclude: str
 
 
-def get_config() -> Movie :
+def get_config() -> Movie:
     with open("config.yml", "r") as f:
         config = yaml.safe_load(f.read())
         return {
@@ -40,7 +40,7 @@ def main():
         print("Set a vault path and/or add a key!")
 
 
-def change_keys(post: frontmatter.Post, normPath: str, keys: list):
+def change_keys(post: frontmatter.Post, norm_path: str, keys: list):
     for key in keys:
         value = post.get(key)
         if value is not None:
@@ -49,19 +49,19 @@ def change_keys(post: frontmatter.Post, normPath: str, keys: list):
                 for el in value:
                     if el is not None and not isinstance(el, list) and el[0:2] != "[[":
                         new_value.append("[[" + el + "]]")
-                        print("File: " + normPath)
+                        print("File: " + norm_path)
                         print("Fixed value: '" + el + "' of key: '" + key + "'")
                     else:
                         new_value.append(el)
             elif isinstance(value, str):
                 if value[0:2] != "[[":
                     new_value.append("[[" + value + "]]")
-                    print("File: " + normPath)
+                    print("File: " + norm_path)
                     print("Fixed value: '" + value + "' of key: '" + key + "'")
                 else:
                     new_value.append(value)
             post.__setitem__(key, new_value)
-    with open(normPath, "w") as f:
+    with open(norm_path, "w") as f:
         f.write(frontmatter.dumps(post))
 
 
