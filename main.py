@@ -61,8 +61,8 @@ def change_keys(post: frontmatter.Post, norm_path: str, keys: list):
                 else:
                     new_value.append(value)
             post.__setitem__(key, new_value)
-    with open(norm_path, "w") as f:
-        if len(post.keys()) > 0:
+    if len(post.keys()) > 0:
+        with open(norm_path, "w") as f:
             f.write(frontmatter.dumps(post))
 
 
