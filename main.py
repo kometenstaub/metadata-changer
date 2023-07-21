@@ -1,8 +1,15 @@
 #!/usr/bin/python3
 import os, frontmatter, yaml
+from typing import TypedDict
 
 
-def get_config() -> dict[str, str]:
+class Movie(TypedDict):
+    keys: list
+    path: str
+    exclude: str
+
+
+def get_config() -> Movie :
     with open("config.yml", "r") as f:
         config = yaml.safe_load(f.read())
         return {
