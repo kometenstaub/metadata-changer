@@ -40,6 +40,9 @@ def main():
                             change_keys(post, normalised_path, keys)
                             if convert:
                                 convert_inline(post)
+                        if len(post.keys()) > 0:
+                            with open(normalised_path, "w") as f:
+                                f.write(frontmatter.dumps(post))
         print("Done!")
     else:
         print("Set a vault path and/or add a key!")
@@ -62,7 +65,10 @@ def convert_inline(post: frontmatter.Post):
                 elif isinstance(current_value, list):
                     for value in current_value:
                         new_values.append(value)
-            #post.__setitem__(key,)
+            new_values.append(match.group(2))
+            post.__setitem__(key, new_values)
+            post.content = "\n".join(lines)
+
 
 def change_keys(post: frontmatter.Post, norm_path: str, keys: list):
     for key in keys:
@@ -85,9 +91,6 @@ def change_keys(post: frontmatter.Post, norm_path: str, keys: list):
                 else:
                     new_value.append(value)
             post.__setitem__(key, new_value)
-    if len(post.keys()) > 0:
-        with open(norm_path, "w") as f:
-            f.write(frontmatter.dumps(post))
 
 
 if __name__ == "__main__":
