@@ -12,6 +12,7 @@ Example config:
 keys: ["parent"] # the YAML keys of which the values shall be transformed
 vault_path: "/Users/username/vault_path/" # absolute path to your vault
 exclude: "Templates" # optional, leave string empty if nothing is to be excluded, but the key needs to exist
+convert_inline: false # whether to convert key:: value
 ```
 
 Easy creation on Linux/macOS
@@ -20,5 +21,6 @@ Easy creation on Linux/macOS
 cat <<< '''keys: ["parent"] # the YAML keys of which the values shall be transformed
 vault_path: "/Users/username/vault_path/" # absolute path to your vault
 exclude: "Templates" # optional, leave string empty if nothing is to be excluded, but the key needs to exist
+convert_inline: false # whether to convert key:: value
 ''' > config.yml
 ```

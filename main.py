@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import os, frontmatter, yaml
+import os, frontmatter, yaml, re
 from typing import TypedDict
 
 
@@ -7,6 +7,7 @@ class Movie(TypedDict):
     keys: list
     path: str
     exclude: str
+    convert_inline: bool
 
 
 def get_config() -> Movie:
@@ -15,7 +16,8 @@ def get_config() -> Movie:
         return {
             "keys": config["keys"],
             "path": config["vault_path"],
-            "exclude": config["exclude"]
+            "exclude": config["exclude"],
+            "convert_inline": config["convert_inline"]
         }
 
 
@@ -24,6 +26,7 @@ def main():
     keys = config["keys"]
     vault_path = config["path"]
     exclude = config["exclude"]
+    convert = config["convert_inline"]
     if len(vault_path) > 0 and len(keys) > 0:
         for dirpath, dirnames, files in os.walk(vault_path):
             # print(f"Found directory: {dirnames}, located here:{dirpath}")
@@ -35,10 +38,31 @@ def main():
                         with open(normalised_path, "r") as f:
                             post = frontmatter.load(f)
                             change_keys(post, normalised_path, keys)
+                            if convert:
+                                convert_inline(post)
         print("Done!")
     else:
         print("Set a vault path and/or add a key!")
 
+
+def convert_inline(post: frontmatter.Post):
+    content = post.content
+    lines = content.split("\n")
+    for index, line in enumerate(lines):
+        match = re.search(r"(.*?)::\s*? (\[\[.+?]])", line)
+        print(match)
+        if match:
+            lines.pop(index)
+            key = match.group(1)
+            current_value = post.get(key)
+            new_values = []
+            if current_value:
+                if isinstance(current_value, str):
+                    new_values.append(current_value)
+                elif isinstance(current_value, list):
+                    for value in current_value:
+                        new_values.append(value)
+            #post.__setitem__(key,)
 
 def change_keys(post: frontmatter.Post, norm_path: str, keys: list):
     for key in keys:
