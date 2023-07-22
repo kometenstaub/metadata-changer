@@ -39,7 +39,7 @@ def main():
                             post = frontmatter.load(f)
                             change_keys(post, normalised_path, keys)
                             if convert:
-                                convert_inline(post)
+                                convert_inline(post, keys)
                         if len(post.keys()) > 0:
                             with open(normalised_path, "w") as f:
                                 f.write(frontmatter.dumps(post))
@@ -48,7 +48,7 @@ def main():
         print("Set a vault path and/or add a key!")
 
 
-def convert_inline(post: frontmatter.Post):
+def convert_inline(post: frontmatter.Post, keys: list):
     content = post.content
     lines = content.split("\n")
     for index, line in enumerate(lines):
@@ -59,7 +59,7 @@ def convert_inline(post: frontmatter.Post):
             excluded_chars = "[]{}*-_># " # may need fine-tuning
             new_key = raw_key.strip(excluded_chars)
             match = re.findall(r"(\[\[.+?]])", raw_value)
-            if len(match) > 0:
+            if len(match) > 0 and new_key in keys:
                 lines.pop(index)
                 current_value = post.get(new_key)
                 new_values = []
