@@ -3,14 +3,14 @@ import os, frontmatter, yaml, re
 from typing import TypedDict
 
 
-class Movie(TypedDict):
+class Config(TypedDict):
     keys: list
     path: str
     exclude: str
     convert_inline: bool
 
 
-def get_config() -> Movie:
+def get_config() -> Config:
     with open("config.yml", "r") as f:
         config = yaml.safe_load(f.read())
         return {
