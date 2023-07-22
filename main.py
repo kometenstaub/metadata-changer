@@ -51,6 +51,7 @@ def main():
 def convert_inline(post: frontmatter.Post, keys: list):
     content = post.content
     lines = content.split("\n")
+    indices = []
     for index, line in enumerate(lines):
         inline = line.find("::")
         if inline > 0:
@@ -60,7 +61,7 @@ def convert_inline(post: frontmatter.Post, keys: list):
             new_key = raw_key.strip(excluded_chars)
             match = re.findall(r"(\[\[.+?]])", raw_value)
             if len(match) > 0 and new_key in keys:
-                lines.pop(index)
+                indices.append(index)
                 current_value = post.get(new_key)
                 new_values = []
                 if current_value:
@@ -72,7 +73,12 @@ def convert_inline(post: frontmatter.Post, keys: list):
                 for el in match:
                     new_values.append(el)
                 post.__setitem__(new_key, new_values)
-                post.content = "\n".join(lines)
+                print("Fixed inline key: '" + new_key + "' with value(s): '" + ", ".join(match) + "'")
+    if len(indices) > 0:
+        new_indices = reversed(indices)
+        for index in new_indices:
+            lines.pop(index)
+            post.content = "\n".join(lines)
 
 
 def change_keys(post: frontmatter.Post, norm_path: str, keys: list):
