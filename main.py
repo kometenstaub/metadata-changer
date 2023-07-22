@@ -52,22 +52,27 @@ def convert_inline(post: frontmatter.Post):
     content = post.content
     lines = content.split("\n")
     for index, line in enumerate(lines):
-        match = re.search(r"(.*?)::\s*? (\[\[.+?]])", line)
-        print(match)
-        if match:
-            lines.pop(index)
-            key = match.group(1)
-            current_value = post.get(key)
-            new_values = []
-            if current_value:
-                if isinstance(current_value, str):
-                    new_values.append(current_value)
-                elif isinstance(current_value, list):
-                    for value in current_value:
-                        new_values.append(value)
-            new_values.append(match.group(2))
-            post.__setitem__(key, new_values)
-            post.content = "\n".join(lines)
+        inline = line.find("::")
+        if inline > 0:
+            raw_key = line[:inline]
+            raw_value = line[inline + 2:]
+            excluded_chars = "[]{}*-_># " # may need fine-tuning
+            new_key = raw_key.strip(excluded_chars)
+            match = re.findall(r"(\[\[.+?]])", raw_value)
+            if len(match) > 0:
+                lines.pop(index)
+                current_value = post.get(new_key)
+                new_values = []
+                if current_value:
+                    if isinstance(current_value, str):
+                        new_values.append(current_value)
+                    elif isinstance(current_value, list):
+                        for value in current_value:
+                            new_values.append(value)
+                for el in match:
+                    new_values.append(el)
+                post.__setitem__(new_key, new_values)
+                post.content = "\n".join(lines)
 
 
 def change_keys(post: frontmatter.Post, norm_path: str, keys: list):
