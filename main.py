@@ -2,12 +2,32 @@
 import os, frontmatter, yaml, re
 from typing import TypedDict
 
+try:
+    from yaml import CSafeDumper as SafeDumper
+except ImportError:
+    from yaml import SafeDumper
+
+from frontmatter import YAMLHandler
+
 
 class Config(TypedDict):
     keys: list
     path: str
     exclude: str
     convert_inline: bool
+
+
+global dict_keys
+
+# Hacky stuff from https://stackoverflow.com/questions/47542343/how-to-print-a-value-with-double-quotes-and-spaces-in-yaml
+def mk_double_quote(dumper, data):
+    if data in dict_keys:
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='')
+    else:
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"')
+
+
+SafeDumper.add_representer(str, mk_double_quote)
 
 
 def get_config() -> Config:
@@ -42,6 +62,8 @@ def main():
                                 convert_inline(post, keys)
                         if len(post.keys()) > 0:
                             with open(normalised_path, "w") as f:
+                                global dict_keys
+                                dict_keys = set(post.keys())
                                 f.write(frontmatter.dumps(post))
         print("Done!")
     else:
