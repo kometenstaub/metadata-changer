@@ -23,7 +23,7 @@ It does two things after you select on which `keys` it shall act:
 1. Create a YAML config file `config.yml` (see example below)
 2. `pip3 install -r requirements.txt`
 3. Set the values for the keys and the vault path.
-4. `./main.py`
+4. Windows: `python3 main.py`; Linux/macOS: `./main.py` 
 
 ### Example config:
 
