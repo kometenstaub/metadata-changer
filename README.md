@@ -6,7 +6,7 @@ This Python script is made for Breadcrumbs users.
 It does two things after you select on which `keys` it shall act:
 
 1. It converts all the values (which need to be either a `string` or an `array`) and formats them as wikilinks.
-2. If you set `convert_inline` to `true` in the config file, it will move the properties to the frontmatter, turning them into a `list`.
+2. If you set `convert_inline` to `true` in the config file, it will move the `[[wikilinks]]` to the frontmatter, turning them into a `list`. **Attention: This will remove anything that is not a wikilink from that value. 
 
 **Disclaimer: I have tested this on my own vault and written it for my own use case, but have not done extensive testing. *Make sure to have backups, use version control and test it on a test vault first*.**
 
