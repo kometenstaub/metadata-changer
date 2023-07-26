@@ -20,10 +20,13 @@ It does two things after you select on which `keys` it shall act:
 
 ## Usage
 
-1. Create a YAML config file `config.yml` (see example below)
-2. `pip3 install -r requirements.txt`
-3. Set the values for the keys and the vault path.
-4. Windows: `python3 main.py`; Linux/macOS: `./main.py` 
+1. Download or clone this repository.
+2. Create a YAML config file `config.yml` (see example below)
+3. `pip3 install -r requirements.txt`
+4. Set the values for the keys and the vault path.
+5. Run the following in the directory where you saved/cloned this repo: 
+   - Windows: `python3 main.py`
+   - Linux/macOS: `./main.py` 
 
 ### Example config:
 
